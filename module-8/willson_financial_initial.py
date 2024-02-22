@@ -9,10 +9,10 @@ from mysql.connector import errorcode
 
 # defines user login information
 config = {
-    "user": "movies_user",
-    "password": "popcorn",
+    "user": "wilson_user",
+    "password": "financial",
     "host": "127.0.0.1",
-    "database": "movies",
+    "database": "wilson_assets",
     "raise_on_warnings": True
 }
 
