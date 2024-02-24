@@ -12,7 +12,7 @@ config = {
     "user": "wilson_user",
     "password": "financial",
     "host": "127.0.0.1",
-    "database": "wilson_assets",
+    "database": "bravo",
     "raise_on_warnings": True
 }
 
@@ -40,5 +40,5 @@ finally:
     
     
 # connect db to cursor
-db = mysql.connector.connect(**config)
-cursor = db.cursor()  
+# db = mysql.connector.connect(**config)
+# cursor = db.cursor()  
