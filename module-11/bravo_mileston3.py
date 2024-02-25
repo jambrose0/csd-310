@@ -76,4 +76,4 @@ def new_clients(cursor, title):
 
 
 new_clients(cursor, 'THE FOLLOWING CLIENT(S) HAVE JOINED WITHIN THE PAST 6 MONTHS')
-# avg_assets(cursor, 'REPORTING AVERAGE NUMBER OF ASSETS')
+avg_assets(cursor, 'REPORTING AVERAGE NUMBER OF ASSETS')
