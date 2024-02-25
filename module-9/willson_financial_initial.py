@@ -5,8 +5,6 @@
 import mysql.connector
 from mysql.connector import errorcode
 
-
-
 # defines user login information
 config = {
     "user": "wilson_user",
@@ -38,30 +36,39 @@ except mysql.connector.Error as err:
 finally:
     db.close()
     
-    
 # connect db to cursor
 db = mysql.connector.connect(**config)
-cursor = db.cursor()  
 
-def display_results(cursor, title):
-    cursor.execute('SELECT asset_type, asset_value FROM assets')
-    
-    assets = cursor.fetchall()
-    
-    print("\n -- {} --".format(title))
-    
-    for x in assets:
-        print("Asset Type: {}\nAsset Value:{}".format(assets[0], assets[1]))
+cursor = db.cursor()
+assets_name = "Assets"
+print("--DISPLAYING {} RECORDS--".format(assets_name))
 
-def show_transactions(cursor, title):
-    cursor.execute('SELECT * FROM transactions')
-    
-    transactions = cursor.fetchall()
-    
-    print("\n -- {} --".format(title))
+cursor.execute("SELECT * FROM Assets")
+asset = cursor.fetchall()
+for row in asset:
+    print("Asset ID: {}\nAsset Type: {}\nAsset Value: {}\nClient ID: {}\n".format(row[0], row[1], row[2], row[3]))
 
-    for x in transactions:
-        print(x)
 
-display_results(cursor, 'DISPLAYING ASSETS')
-show_transactions(cursor, 'DISPLAYING TRANSACTIONS')
+clients_name = "Client"
+print("--DISPLAYING {} RECORDS--".format(clients_name))
+
+cursor.execute("SELECT * FROM client")
+client = cursor.fetchall()
+for row in client:
+    print("Client ID: {}\nClient Name: {}\nClient Address: {}\nClient Phone: {}\nClient Email: {}\nClient Since: {}\n".format(row[0], row[1], row[2], row[3], row[4], row[5]))
+
+
+transactions_name = "Transactions"
+print("--DISPLAYING {} RECORDS--".format(transactions_name))
+
+cursor.execute("SELECT * FROM transactions")
+transaction = cursor.fetchall()
+for row in transaction:
+    print("Transaction ID: {}\nTransaction Date: {}\nInvoice Number: {}\nClient ID: {}\nAsset ID: {}\n".format(row[0], row[1], row[2], row[3], row[4]))
+
+
+
+
+cursor.close()
+
+db.close()

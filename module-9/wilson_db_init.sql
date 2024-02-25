@@ -2,7 +2,7 @@
     Title: wilson_db_init.sql
     Author: Jacob Ambrose, Marshall Huckins, John Martino, Jackie Scott
     Date: 02/24/2024
-    Description: assets database initialization script
+    Description: Willson Financial database initialization script
 */
 
 -- drop database user if exists 
