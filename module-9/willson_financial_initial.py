@@ -40,5 +40,28 @@ finally:
     
     
 # connect db to cursor
-# db = mysql.connector.connect(**config)
-# cursor = db.cursor()  
+db = mysql.connector.connect(**config)
+cursor = db.cursor()  
+
+def display_results(cursor, title):
+    cursor.execute('SELECT asset_type, asset_value FROM assets')
+    
+    assets = cursor.fetchall()
+    
+    print("\n -- {} --".format(title))
+    
+    for x in assets:
+        print("Asset Type: {}\nAsset Value:{}".format(assets[0], assets[1]))
+
+def show_transactions(cursor, title):
+    cursor.execute('SELECT * FROM transactions')
+    
+    transactions = cursor.fetchall()
+    
+    print("\n -- {} --".format(title))
+
+    for x in transactions:
+        print(x)
+
+display_results(cursor, 'DISPLAYING ASSETS')
+show_transactions(cursor, 'DISPLAYING TRANSACTIONS')
