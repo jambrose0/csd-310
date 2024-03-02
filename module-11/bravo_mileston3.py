@@ -1,9 +1,13 @@
 # Jacob Ambrose 02/17/2024
 # Module 8.2
+# report1: Average assets
+# report2: customers with more than 10 transactions
+# report3: New customers obtained with last 6 months
 
 # imports mysql connector
 import mysql.connector
 from mysql.connector import errorcode
+from datetime import date
 
 # defines user login information
 config = {
@@ -35,45 +39,65 @@ except mysql.connector.Error as err:
         
 finally:
     db.close()
-    
+
+today = date.today()
 # connect db to cursor
 db = mysql.connector.connect(**config)
-
-# TO-DO
-# generate at least 3 reports
-# report1: customers joined by month
-# report3: customers with more than 10 transactions
-# report4: total average number of assets SELECT AVG(column_name) FROM table_name WHERE condition;
-
-# connect db to cursor
-db = mysql.connector.connect(**config)
-cursor = db.cursor() 
+cursor = db.cursor()
 
 
-# counts average number of assets
+#average assets report
 def avg_assets(cursor, title):
-    sql = "SELECT AVG (asset_value) FROM assets"
-    cursor.execute(sql)
-    
-    asset_avg = cursor.fetchall()
-    
+    print("--{} Managed by Willson Financial--".format(avg_assets))
+    cursor.execute("SELECT AVG (asset_value) FROM transactions")
+    avg_asset_value = cursor.fetchone()[0] 
     print("\n -- {} --\n".format(title))
+    print("**Report Generated On: ",today, "**\n")
+    print("Assets Value: {}".format(avg_asset_value))
+
+
+
+#customers with more than 10 transactions 
+def big_spenders(cursor, title):
+    print("\n -- {} --\n".format(title))
+    print("**Report Generated On: ",today, "**")
+    cursor.execute(""" SELECT c.Client_ID, c.CLIENT_NAME, COUNT(*) AS TransactionCount 
+        FROM transactions t 
+        JOIN CLIENTS c ON t.Client_ID = c.Client_ID 
+        GROUP BY c.Client_ID, c.CLIENT_NAME 
+        HAVING TransactionCount > 10""")
+    rows = cursor.fetchall()
+    for client_id, client_name, transaction_count in rows:
+        print("Client ID: {}\nClient Name: {}\nTransaction Count: {}\n".format(client_id, client_name, transaction_count))
+    print("\n")
     
-    print("Average number of assets: ${}".format(asset_avg))
-
-
+#customers joined last 6 months
 def new_clients(cursor, title):
-    sql = "SELECT client_name, client_address, client_phone, client_email, client_startDate FROM client WHERE client_startDate >= DATE_SUB(NOW(), INTERVAL 6 MONTH)"
-    cursor.execute(sql)
-    
-    
-    clients = cursor.fetchall()
     print("\n -- {} --\n".format(title))
-    
-    for row in clients:
-        print("Client Name: {}\nClient Address: {}\nClient Phone: {}\nClient Email: {}\nClient Since: {}\n".format(row[0], row[1], row[2], row[3], row[4]))
-    
+
+    cursor.execute("""SELECT 
+            YEAR(Client_StartDate) AS Year,
+            MONTH(Client_StartDate) AS Month,
+            CLIENT_NAME,
+            COUNT(*) AS NewClients
+        FROM 
+            CLIENTS
+        WHERE 
+            Client_StartDate >= DATE_SUB(CURDATE(), INTERVAL 6 MONTH)
+        GROUP BY 
+            YEAR(Client_StartDate), MONTH(Client_StartDate), CLIENT_NAME
+        ORDER BY 
+            Year, Month;""")
+    results = cursor.fetchall()
+    print("Clients Added for Each of the Past Six Months:")
+    print("Year\tMonth\tClient Name\tNew Clients")
+    for row in results:
+        print(f"{row[0]}\t{row[1]}\t{row[2]}\t{row[3]}")
+
+    print("**Report Generated On: ",today, "**")
 
 
-new_clients(cursor, 'THE FOLLOWING CLIENT(S) HAVE JOINED WITHIN THE PAST 6 MONTHS')
 avg_assets(cursor, 'REPORTING AVERAGE NUMBER OF ASSETS')
+big_spenders(cursor, 'CUSTOMERS WITH MORE THAN 10 TRANSACTIONS')
+new_clients(cursor, "CLIENTS ADDED WITHIN THE PAST 6 MONTHS:")
+
